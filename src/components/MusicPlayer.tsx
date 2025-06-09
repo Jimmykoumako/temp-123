@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Repeat, Shuffle } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Repeat, Shuffle, Music } from 'lucide-react';
 
 interface Track {
   id: string;
