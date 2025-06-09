@@ -19,7 +19,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/audio" element={<AudioBrowser />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<UserProfile />} />{/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
