@@ -66,7 +66,6 @@ const AdvancedSearchBar = ({
                   className="pl-10"
                 />
                 
-                {/* Suggestions Dropdown */}
                 {showSuggestions && (query || searchHistory.length > 0) && (
                   <Card className="absolute top-full left-0 right-0 z-50 mt-1">
                     <CardContent className="p-2">
@@ -131,7 +130,6 @@ const AdvancedSearchBar = ({
               </Button>
             </div>
 
-            {/* Active Filters */}
             {(filters.type !== 'all' || filters.genre || filters.duration || filters.recent) && (
               <div className="flex flex-wrap gap-2 mt-3">
                 {filters.type !== 'all' && (
@@ -192,7 +190,6 @@ const AdvancedSearchBar = ({
         </CardContent>
       </Card>
 
-      {/* Advanced Filters */}
       {showFilters && (
         <Card>
           <CardContent className="p-4">
@@ -235,9 +232,9 @@ const AdvancedSearchBar = ({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Any Length</SelectItem>
-                    <SelectItem value="short">Short (< 3 min)</SelectItem>
+                    <SelectItem value="short">Short (&lt; 3 min)</SelectItem>
                     <SelectItem value="medium">Medium (3-5 min)</SelectItem>
-                    <SelectItem value="long">Long (> 5 min)</SelectItem>
+                    <SelectItem value="long">Long (&gt; 5 min)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
