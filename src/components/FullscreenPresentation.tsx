@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFullscreenAudio } from "@/hooks/useFullscreenAudio";
 import { useFullscreenControls } from "@/hooks/useFullscreenControls";
 import { useHymnBuffer } from "@/hooks/useHymnBuffer";
+import HymnAudioPlayer from "@/components/hymn-audio/HymnAudioPlayer";
 import FullscreenContent from "@/components/fullscreen/FullscreenContent";
 
 interface Hymn {
@@ -91,11 +92,22 @@ const FullscreenPresentation = ({ hymn, currentVerse, onVerseChange, onExit }: F
         onVerseChange={onVerseChange}
       />
 
+      {/* Compact Audio Player - positioned at top center */}
+      {showControls && (
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 pointer-events-auto z-60">
+          <HymnAudioPlayer 
+            hymnNumber={currentHymn.number}
+            isCompact={true}
+            showTitle={false}
+          />
+        </div>
+      )}
+
       {/* Help text - only shows when controls are visible */}
       {showControls && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 text-slate-400 text-sm text-center">
           <div>Arrow keys or spacebar to navigate • Up/Down arrows for font size • P to play/pause • S to stop • Home/End for first/last • Esc to exit</div>
-          <div className="text-xs mt-1">Search button (bottom right) • Buffer (top right) for hymn queue</div>
+          <div className="text-xs mt-1">Search button (bottom right) • Buffer (top right) for hymn queue • Audio player (top center)</div>
         </div>
       )}
     </div>

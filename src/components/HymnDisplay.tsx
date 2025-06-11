@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import HymnHeader from "./hymn-display/HymnHeader";
@@ -6,6 +5,7 @@ import LyricsFocusButton from "./hymn-display/LyricsFocusButton";
 import HymnDisplayMode from "./hymn-display/HymnDisplayMode";
 import HymnHymnalMode from "./hymn-display/HymnHymnalMode";
 import PlayingIndicator from "./hymn-display/PlayingIndicator";
+import HymnAudioPlayer from "./hymn-audio/HymnAudioPlayer";
 
 interface Hymn {
   id: string;
@@ -92,6 +92,17 @@ const HymnDisplay = ({ hymn, currentVerse, isPlaying, mode, onVerseChange }: Hym
             />
           )}
         </div>
+
+        {/* Audio Player - only show in hymnal mode or when not in lyrics-only mode */}
+        {mode === 'hymnal' || (mode === 'display' && !isLyricsOnly) ? (
+          <div className="mt-8">
+            <HymnAudioPlayer 
+              hymnNumber={hymn.number}
+              isCompact={mode === 'display'}
+              showTitle={mode === 'hymnal'}
+            />
+          </div>
+        ) : null}
 
         <PlayingIndicator isPlaying={isPlaying} />
       </Card>

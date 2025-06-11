@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -103,7 +102,12 @@ const AudioBrowser = () => {
   };
 
   // Mock followers data since it's not in the interactions hook
-  const followers = following.map(userId => ({ id: userId, name: `User ${userId}` }));
+  const mockUserProfiles = following.map(userId => ({ 
+    id: userId, 
+    name: `User ${userId}`,
+    email: `user${userId}@example.com`,
+    profilePicture: null
+  }));
 
   return (
     <div className="min-h-screen bg-background">
@@ -204,7 +208,7 @@ const AudioBrowser = () => {
 
           <TabsContent value="social">
             <SocialMusicFeed
-              userProfiles={followers}
+              profiles={mockUserProfiles}
               onFollowUser={toggleFollowUser}
               onLikeTrack={toggleLikeTrack}
               onLikePlaylist={toggleLikePlaylist}
