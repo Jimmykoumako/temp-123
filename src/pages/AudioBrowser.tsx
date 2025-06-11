@@ -43,28 +43,34 @@ const AudioBrowser = () => {
   } = usePlaylistManager();
 
   const {
-    followUser,
-    unfollowUser,
-    likeTrack,
-    unlikeTrack,
-    likeAlbum,
-    unlikeAlbum,
-    likePlaylist,
-    unlikePlaylist,
-    isFollowing,
+    likedTracks,
+    likedAlbums,
+    likedPlaylists,
+    following,
+    loading: interactionsLoading,
+    toggleLikeTrack,
+    toggleLikeAlbum,
+    toggleLikePlaylist,
+    toggleFollowUser,
     isTrackLiked,
     isAlbumLiked,
     isPlaylistLiked,
-    following,
-    followers
+    isFollowing
   } = useMusicInteractions();
 
   const {
+    query,
+    setQuery,
+    filters,
+    setFilters,
     searchResults,
+    searchHistory,
+    clearSearchHistory,
+    suggestions,
     isSearching,
     searchMusic,
     clearSearch
-  } = useAdvancedSearch();
+  } = useAdvancedSearch(tracks, albums, artists);
 
   const handlePlayTrack = (track: any) => {
     console.log('Playing track:', track);
@@ -95,6 +101,9 @@ const AudioBrowser = () => {
   const goBack = () => {
     window.history.back();
   };
+
+  // Mock followers data since it's not in the interactions hook
+  const followers = following.map(userId => ({ id: userId, name: `User ${userId}` }));
 
   return (
     <div className="min-h-screen bg-background">
@@ -129,9 +138,14 @@ const AudioBrowser = () => {
         {/* Search Bar */}
         <div className="mb-8">
           <AdvancedSearchBar
+            query={query}
+            onQueryChange={setQuery}
+            filters={filters}
+            onFiltersChange={setFilters}
+            suggestions={suggestions}
+            searchHistory={searchHistory}
+            onClearHistory={clearSearchHistory}
             onSearch={searchMusic}
-            onClear={clearSearch}
-            isLoading={isSearching}
           />
         </div>
 
@@ -190,14 +204,10 @@ const AudioBrowser = () => {
 
           <TabsContent value="social">
             <SocialMusicFeed
-              following={following}
-              followers={followers}
-              onFollowUser={followUser}
-              onUnfollowUser={unfollowUser}
-              onLikeTrack={likeTrack}
-              onUnlikeTrack={unlikeTrack}
-              onLikePlaylist={likePlaylist}
-              onUnlikePlaylist={unlikePlaylist}
+              userProfiles={followers}
+              onFollowUser={toggleFollowUser}
+              onLikeTrack={toggleLikeTrack}
+              onLikePlaylist={toggleLikePlaylist}
               isFollowing={isFollowing}
               isTrackLiked={isTrackLiked}
               isPlaylistLiked={isPlaylistLiked}
@@ -206,7 +216,7 @@ const AudioBrowser = () => {
         </Tabs>
 
         {/* Status Info */}
-        {(libraryLoading || playlistLoading || isSearching) && (
+        {(libraryLoading || playlistLoading || isSearching || interactionsLoading) && (
           <div className="fixed bottom-4 right-4 bg-background border rounded-lg p-4 shadow-lg">
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
@@ -214,6 +224,7 @@ const AudioBrowser = () => {
                 {libraryLoading && 'Loading library...'}
                 {playlistLoading && 'Loading playlists...'}
                 {isSearching && 'Searching...'}
+                {interactionsLoading && 'Loading interactions...'}
               </span>
             </div>
           </div>

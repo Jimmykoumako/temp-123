@@ -33,13 +33,14 @@ interface SearchFilters {
 }
 
 export const useAdvancedSearch = (
-  tracks: Track[],
-  albums: Album[],
-  artists: Artist[]
+  tracks: Track[] = [],
+  albums: Album[] = [],
+  artists: Artist[] = []
 ) => {
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SearchFilters>({ type: 'all' });
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const searchResults = useMemo(() => {
     if (!query.trim()) {
@@ -89,6 +90,22 @@ export const useAdvancedSearch = (
     };
   }, [query, filters, tracks, albums, artists]);
 
+  const searchMusic = async (searchQuery: string) => {
+    setIsSearching(true);
+    setQuery(searchQuery);
+    addToSearchHistory(searchQuery);
+    
+    // Simulate search delay
+    setTimeout(() => {
+      setIsSearching(false);
+    }, 500);
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    setIsSearching(false);
+  };
+
   const addToSearchHistory = (searchQuery: string) => {
     if (searchQuery.trim()) {
       setSearchHistory(prev => {
@@ -137,6 +154,9 @@ export const useAdvancedSearch = (
     searchHistory,
     addToSearchHistory,
     clearSearchHistory,
-    suggestions: getSuggestions()
+    suggestions: getSuggestions(),
+    isSearching,
+    searchMusic,
+    clearSearch
   };
 };

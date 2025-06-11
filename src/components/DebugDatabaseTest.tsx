@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +35,7 @@ const DebugDatabaseTest = () => {
     updateResult(tableName, 'SELECT', 'loading', 'Testing...');
     try {
       const { data, error } = await supabase
-        .from(tableName)
+        .from(tableName as any)
         .select('*')
         .limit(1);
       
@@ -56,7 +55,7 @@ const DebugDatabaseTest = () => {
     updateResult(tableName, 'COUNT', 'loading', 'Testing...');
     try {
       const { count, error } = await supabase
-        .from(tableName)
+        .from(tableName as any)
         .select('*', { count: 'exact', head: true });
       
       if (error) {
