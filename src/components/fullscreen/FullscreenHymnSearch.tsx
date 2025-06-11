@@ -36,7 +36,7 @@ const FullscreenHymnSearch = ({
   // Convert static hymns data to match our Hymn interface
   const convertedHymns: Hymn[] = hymns.map(hymn => ({
     id: hymn.id.toString(),
-    number: hymn.number.toString(),
+    number: hymn.number,
     title: hymn.title,
     author: hymn.author,
     verses: hymn.verses,

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -33,7 +32,7 @@ const RemoteControl = ({ deviceId, onBack }: RemoteControlProps) => {
 
   const selectHymn = (hymnId: number) => {
     setSelectedHymn(hymnId);
-    sendCommand('selectHymn', { hymnId });
+    sendCommand('selectHymn', { hymnId: hymnId.toString() });
   };
 
   if (!isConnected) {
