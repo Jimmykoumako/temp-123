@@ -56,15 +56,33 @@ export const usePlaylistManager = () => {
               .select('*')
               .in('id', trackIds);
             
+            const formattedTracks = (tracks || []).map(track => ({
+              id: track.id,
+              title: track.title,
+              artist: 'HBC Hymns',
+              url: track.url,
+              duration: '3:45',
+              hymnNumber: track.hymnTitleNumber,
+              album: 'HBC Collection'
+            }));
+            
             return {
-              ...playlist,
-              tracks: tracks || [],
-              trackCount: tracks?.length || 0
+              id: playlist.id,
+              title: playlist.title,
+              description: playlist.description,
+              userId: playlist.userId,
+              createdAt: new Date().toISOString(),
+              tracks: formattedTracks,
+              trackCount: formattedTracks.length
             };
           }
           
           return {
-            ...playlist,
+            id: playlist.id,
+            title: playlist.title,
+            description: playlist.description,
+            userId: playlist.userId,
+            createdAt: new Date().toISOString(),
             tracks: [],
             trackCount: 0
           };
@@ -101,8 +119,12 @@ export const usePlaylistManager = () => {
 
       if (error) throw error;
 
-      const newPlaylist = {
-        ...data,
+      const newPlaylist: Playlist = {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        userId: data.userId,
+        createdAt: new Date().toISOString(),
         tracks: [],
         trackCount: 0
       };
