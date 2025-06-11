@@ -5,6 +5,7 @@ import { useFullscreenControls } from "@/hooks/useFullscreenControls";
 import { useHymnBuffer } from "@/hooks/useHymnBuffer";
 import HymnAudioPlayer from "@/components/hymn-audio/HymnAudioPlayer";
 import FullscreenContent from "@/components/fullscreen/FullscreenContent";
+import FullscreenTopControls from "@/components/fullscreen/FullscreenTopControls";
 
 interface Hymn {
   id: string;
@@ -76,6 +77,11 @@ const FullscreenPresentation = ({ hymn, currentVerse, onVerseChange, onExit }: F
 
   return (
     <div className="fixed inset-0 bg-slate-900 text-white z-50 overflow-hidden">
+      {/* Top Controls - positioned at top right */}
+      {showControls && (
+        <FullscreenTopControls onExit={onExit} />
+      )}
+
       <FullscreenContent
         title={currentHymn.title}
         content={content}

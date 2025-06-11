@@ -55,9 +55,9 @@ const HymnDisplayMode = ({ hymn, currentVerse, isLyricsOnly, displaySize, onVers
     );
   }
 
-  // Regular display mode
+  // Regular display mode - ensure full height with no scrolling
   return (
-    <div className="min-h-[60vh] flex flex-col justify-center">
+    <div className="h-[calc(100vh-16rem)] flex flex-col justify-center">
       {/* Fullscreen button */}
       <div className="flex justify-end mb-4">
         <Button
@@ -71,52 +71,54 @@ const HymnDisplayMode = ({ hymn, currentVerse, isLyricsOnly, displaySize, onVers
         </Button>
       </div>
 
-      <Carousel 
-        className="w-full max-w-4xl mx-auto"
-        opts={{
-          align: "start",
-          loop: false,
-        }}
-      >
-        <CarouselContent>
-          {hymn.verses.map((verse, index) => (
-            <CarouselItem key={index}>
-              <div className="text-center p-6">
-                <div className="text-2xl font-semibold text-blue-600 mb-8">
-                  Verse {index + 1}
+      <div className="flex-1 flex items-center">
+        <Carousel 
+          className="w-full max-w-4xl mx-auto"
+          opts={{
+            align: "start",
+            loop: false,
+          }}
+        >
+          <CarouselContent>
+            {hymn.verses.map((verse, index) => (
+              <CarouselItem key={index}>
+                <div className="text-center p-6">
+                  <div className="text-2xl font-semibold text-blue-600 mb-8">
+                    Verse {index + 1}
+                  </div>
+                  <div className={`${displaySize} leading-relaxed text-slate-800 max-w-3xl mx-auto`}>
+                    {verse.split('\n').map((line, lineIdx) => (
+                      <div key={lineIdx} className="mb-4">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className={`${displaySize} leading-relaxed text-slate-800 max-w-3xl mx-auto`}>
-                  {verse.split('\n').map((line, lineIdx) => (
-                    <div key={lineIdx} className="mb-4">
-                      {line}
-                    </div>
-                  ))}
+              </CarouselItem>
+            ))}
+            {hymn.chorus && (
+              <CarouselItem>
+                <div className="text-center p-6">
+                  <div className="text-2xl font-semibold text-yellow-700 mb-8">
+                    Chorus
+                  </div>
+                  <div className={`${displaySize} leading-relaxed text-slate-800 max-w-3xl mx-auto`}>
+                    {hymn.chorus.split('\n').map((line, lineIdx) => (
+                      <div key={lineIdx} className="mb-4">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
-          {hymn.chorus && (
-            <CarouselItem>
-              <div className="text-center p-6">
-                <div className="text-2xl font-semibold text-yellow-700 mb-8">
-                  Chorus
-                </div>
-                <div className={`${displaySize} leading-relaxed text-slate-800 max-w-3xl mx-auto`}>
-                  {hymn.chorus.split('\n').map((line, lineIdx) => (
-                    <div key={lineIdx} className="mb-4">
-                      {line}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CarouselItem>
-          )}
-        </CarouselContent>
-        <CarouselPrevious className="left-4" />
-        <CarouselNext className="right-4" />
-      </Carousel>
+              </CarouselItem>
+            )}
+          </CarouselContent>
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+        </Carousel>
+      </div>
       
-      <div className="text-center mt-8 text-slate-500">
+      <div className="text-center mt-4 text-slate-500">
         <p className="text-lg">Verse {currentVerse + 1} of {hymn.verses.length}</p>
         <p className="text-sm mt-2">Use arrow keys, spacebar, or swipe to navigate • Home/End for first/last verse</p>
       </div>

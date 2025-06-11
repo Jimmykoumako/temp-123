@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import HymnHeader from "./hymn-display/HymnHeader";
@@ -60,8 +61,8 @@ const HymnDisplay = ({ hymn, currentVerse, isPlaying, mode, onVerseChange }: Hym
   }, [mode, currentVerse, hymn.verses.length, onVerseChange]);
   
   return (
-    <div className="max-w-4xl mx-auto">
-      <Card className="p-8 bg-white shadow-xl">
+    <div className={`max-w-4xl mx-auto ${mode === 'display' ? 'h-screen' : ''}`}>
+      <Card className={`p-8 bg-white shadow-xl ${mode === 'display' ? 'h-full flex flex-col' : ''}`}>
         <HymnHeader 
           hymn={hymn} 
           isLyricsOnly={isLyricsOnly} 
@@ -75,7 +76,7 @@ const HymnDisplay = ({ hymn, currentVerse, isPlaying, mode, onVerseChange }: Hym
           />
         )}
 
-        <div className="space-y-8">
+        <div className={`space-y-8 ${mode === 'display' ? 'flex-1' : ''}`}>
           {mode === 'display' ? (
             <HymnDisplayMode 
               hymn={hymn}

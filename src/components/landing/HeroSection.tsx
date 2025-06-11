@@ -1,9 +1,14 @@
 
-import { Book, Heart } from "lucide-react";
+import { Book, Heart, Play, Music } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onModeSelect: (mode: 'browse' | 'hymnal' | 'display' | 'lyrics') => void;
+}
+
+const HeroSection = ({ onModeSelect }: HeroSectionProps) => {
   return (
-    <section className="relative py-16 px-4">
+    <section className="relative py-12 px-4">
       <div className="container mx-auto text-center max-w-4xl">
         {/* Welcome Message */}
         <div className="mb-8">
@@ -14,37 +19,43 @@ const HeroSection = () => {
             </div>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Welcome to Digital Hymnbook
+            Anthems of Faith
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-            Empowering congregational worship with modern technology for timeless songs of praise
+            Experience worship through timeless hymns with modern technology
           </p>
         </div>
 
-        {/* Scripture Verse */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 mb-12 shadow-lg border border-white/20">
-          <blockquote className="text-2xl md:text-3xl font-serif text-slate-700 italic leading-relaxed mb-4">
-            "Rejoice in the LORD, O ye righteous: for praise is comely for the upright."
-          </blockquote>
-          <cite className="text-lg text-slate-600 font-medium">— Psalm 33:1 (KJV)</cite>
+        {/* Call to Action */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-lg border border-white/20">
+          <h2 className="text-2xl font-bold text-slate-700 mb-4">Start Your Worship Journey</h2>
+          <p className="text-slate-600 mb-6">Explore hymns, join group sessions, or dive into presentation mode</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={() => onModeSelect('browse')}
+              size="lg"
+              className="bg-primary hover:bg-primary/90"
+            >
+              <Music className="w-5 h-5 mr-2" />
+              Explore Hymns
+            </Button>
+            <Button 
+              onClick={() => onModeSelect('display')}
+              variant="outline" 
+              size="lg"
+            >
+              <Play className="w-5 h-5 mr-2" />
+              Try Presentation
+            </Button>
+          </div>
         </div>
 
-        {/* Audience-Specific Welcome */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <Heart className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-3">For Worship Leaders</h3>
-            <p className="text-muted-foreground">
-              Lead your congregation with confidence using synchronized displays, remote controls, and seamless group sessions.
-            </p>
-          </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <Heart className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-3">For Congregations</h3>
-            <p className="text-muted-foreground">
-              Join in unified worship with clear lyrics, easy navigation, and tools designed to enhance your singing experience.
-            </p>
-          </div>
+        {/* Scripture Verse */}
+        <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 shadow-md border border-white/20">
+          <blockquote className="text-lg md:text-xl font-serif text-slate-700 italic leading-relaxed mb-3">
+            "Sing unto the LORD a new song, and his praise from the end of the earth"
+          </blockquote>
+          <cite className="text-md text-slate-600 font-medium">— Isaiah 42:10 (KJV)</cite>
         </div>
       </div>
     </section>
