@@ -25,7 +25,6 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<UserProfile />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
