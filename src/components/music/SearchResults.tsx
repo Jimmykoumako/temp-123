@@ -35,36 +35,23 @@ interface SearchResultsProps {
     artists: Artist[];
     total: number;
   };
-  query: string;
-  currentTrack?: string;
-  isPlaying: boolean;
-  onPlayTrack: (trackId: string) => void;
-  onPlayAlbum?: (albumId: string) => void;
-  onPlayArtist?: (artistName: string) => void;
+  onPlayTrack: (track: Track) => void;
+  onToggleFavorite: (track: Track) => void;
+  isInFavorites: (trackId: string) => boolean;
 }
 
 const SearchResults = ({
   results,
-  query,
-  currentTrack,
-  isPlaying,
   onPlayTrack,
-  onPlayAlbum,
-  onPlayArtist
+  onToggleFavorite,
+  isInFavorites
 }: SearchResultsProps) => {
-  if (!query) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Music className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Start Searching</h3>
-          <p className="text-muted-foreground text-center">
-            Enter a search term to find songs, albums, and artists.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+  const handlePlayTrack = (trackId: string) => {
+    const track = results.tracks.find(t => t.id === trackId);
+    if (track) {
+      onPlayTrack(track);
+    }
+  };
 
   if (results.total === 0) {
     return (
@@ -73,7 +60,7 @@ const SearchResults = ({
           <Music className="h-16 w-16 text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No Results Found</h3>
           <p className="text-muted-foreground text-center">
-            No songs, albums, or artists found for "{query}".
+            Try adjusting your search terms or filters.
           </p>
         </CardContent>
       </Card>
@@ -95,9 +82,8 @@ const SearchResults = ({
           </h3>
           <TrackList
             tracks={results.tracks}
-            currentTrack={currentTrack}
-            isPlaying={isPlaying}
-            onPlayTrack={onPlayTrack}
+            onPlayTrack={handlePlayTrack}
+            isPlaying={false}
           />
         </div>
       )}
@@ -110,11 +96,7 @@ const SearchResults = ({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {results.albums.map((album) => (
-              <Card 
-                key={album.id} 
-                className="group hover:bg-muted/50 transition-colors cursor-pointer"
-                onClick={() => onPlayAlbum?.(album.id)}
-              >
+              <Card key={album.id} className="group hover:bg-muted/50 transition-colors cursor-pointer">
                 <CardHeader className="pb-4">
                   <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center mb-4">
                     {album.coverImage ? (
@@ -143,11 +125,7 @@ const SearchResults = ({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {results.artists.map((artist) => (
-              <Card 
-                key={artist.name} 
-                className="group hover:bg-muted/50 transition-colors cursor-pointer"
-                onClick={() => onPlayArtist?.(artist.name)}
-              >
+              <Card key={artist.name} className="group hover:bg-muted/50 transition-colors cursor-pointer">
                 <CardHeader className="pb-4">
                   <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mb-4">
                     <User className="h-12 w-12 text-muted-foreground" />

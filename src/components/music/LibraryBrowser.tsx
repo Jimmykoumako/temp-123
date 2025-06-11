@@ -5,38 +5,66 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Music, User, Disc, Heart, Clock, Grid, List } from 'lucide-react';
 import TrackList from '@/components/TrackList';
-import { useMusicLibrary } from '@/hooks/useMusicLibrary';
 
-interface LibraryBrowserProps {
-  onPlayTrack: (trackId: string) => void;
-  currentTrack?: string;
-  isPlaying: boolean;
+interface Track {
+  id: string;
+  title: string;
+  artist: string;
+  url: string;
+  duration?: string;
+  hymnNumber?: string;
+  album?: string;
+  albumId?: string;
 }
 
-const LibraryBrowser = ({ onPlayTrack, currentTrack, isPlaying }: LibraryBrowserProps) => {
-  const { tracks, albums, artists, recentlyPlayed, favorites, loading } = useMusicLibrary();
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+interface Album {
+  id: string;
+  title: string;
+  artist: string;
+  coverImage?: string;
+  trackCount: number;
+  tracks?: Track[];
+}
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-48 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-4">
-                  <div className="aspect-square bg-muted rounded-lg mb-4" />
-                  <div className="h-4 bg-muted rounded mb-2" />
-                  <div className="h-3 bg-muted rounded w-2/3" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+interface Artist {
+  name: string;
+  trackCount: number;
+  albums: string[];
+}
+
+interface LibraryBrowserProps {
+  tracks: Track[];
+  albums: Album[];
+  artists: Artist[];
+  recentlyPlayed: Track[];
+  favorites: Track[];
+  onPlayTrack: (track: Track) => void;
+  onToggleFavorite: (track: Track) => void;
+  isInFavorites: (trackId: string) => boolean;
+}
+
+const LibraryBrowser = ({ 
+  tracks, 
+  albums, 
+  artists, 
+  recentlyPlayed, 
+  favorites, 
+  onPlayTrack, 
+  onToggleFavorite,
+  isInFavorites 
+}: LibraryBrowserProps) => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [currentTrack, setCurrentTrack] = useState<string>();
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayTrack = (trackId: string) => {
+    const track = tracks.find(t => t.id === trackId);
+    if (track) {
+      onPlayTrack(track);
+      setCurrentTrack(trackId);
+      setIsPlaying(true);
+    }
+  };
 
   const QuickStats = () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -175,7 +203,7 @@ const LibraryBrowser = ({ onPlayTrack, currentTrack, isPlaying }: LibraryBrowser
             tracks={recentlyPlayed}
             currentTrack={currentTrack}
             isPlaying={isPlaying}
-            onPlayTrack={onPlayTrack}
+            onPlayTrack={handlePlayTrack}
             title="Recently Played"
           />
         </TabsContent>
@@ -186,7 +214,7 @@ const LibraryBrowser = ({ onPlayTrack, currentTrack, isPlaying }: LibraryBrowser
               tracks={favorites}
               currentTrack={currentTrack}
               isPlaying={isPlaying}
-              onPlayTrack={onPlayTrack}
+              onPlayTrack={handlePlayTrack}
               title="Your Favorites"
             />
           ) : (
@@ -207,7 +235,7 @@ const LibraryBrowser = ({ onPlayTrack, currentTrack, isPlaying }: LibraryBrowser
             tracks={tracks}
             currentTrack={currentTrack}
             isPlaying={isPlaying}
-            onPlayTrack={onPlayTrack}
+            onPlayTrack={handlePlayTrack}
             title="All Songs"
           />
         </TabsContent>
