@@ -5,7 +5,30 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share, Play, User, Music } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useMusicInteractions } from '@/hooks/useMusicInteractions';
+
+interface Track {
+  id: string;
+  title: string;
+  artist: string;
+  url: string;
+  duration?: string;
+  hymnNumber?: string;
+  album?: string;
+}
+
+interface Playlist {
+  id: string;
+  title: string;
+  description?: string;
+  userId: string;
+}
+
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  profilePicture?: string | null;
+}
 
 interface ActivityItem {
   id: string;
@@ -23,13 +46,28 @@ interface ActivityItem {
 }
 
 interface SocialMusicFeedProps {
+  profiles: UserProfile[];
+  onFollowUser: (userId: string) => void;
+  onLikeTrack: (track: Track) => void;
+  onLikePlaylist: (playlist: Playlist) => void;
+  isFollowing: (userId: string) => boolean;
+  isTrackLiked: (trackId: string) => boolean;
+  isPlaylistLiked: (playlistId: string) => boolean;
   onPlayTrack?: (trackId: string) => void;
 }
 
-const SocialMusicFeed = ({ onPlayTrack }: SocialMusicFeedProps) => {
+const SocialMusicFeed = ({ 
+  profiles,
+  onFollowUser,
+  onLikeTrack,
+  onLikePlaylist,
+  isFollowing,
+  isTrackLiked,
+  isPlaylistLiked,
+  onPlayTrack 
+}: SocialMusicFeedProps) => {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toggleLikeTrack, isTrackLiked } = useMusicInteractions();
 
   // Mock data for demonstration
   const mockActivities: ActivityItem[] = [
@@ -123,6 +161,25 @@ const SocialMusicFeed = ({ onPlayTrack }: SocialMusicFeedProps) => {
     }
   };
 
+  const handleLikeTrack = (activity: ActivityItem) => {
+    const mockTrack: Track = {
+      id: activity.id,
+      title: activity.content.title,
+      artist: activity.content.artist || '',
+      url: ''
+    };
+    onLikeTrack(mockTrack);
+  };
+
+  const handleLikePlaylist = (activity: ActivityItem) => {
+    const mockPlaylist: Playlist = {
+      id: activity.id,
+      title: activity.content.title,
+      userId: activity.userId
+    };
+    onLikePlaylist(mockPlaylist);
+  };
+
   if (loading) {
     return (
       <Card>
@@ -180,7 +237,17 @@ const SocialMusicFeed = ({ onPlayTrack }: SocialMusicFeedProps) => {
 
                 {(activity.type === 'track_like' || activity.type === 'album_like') && (
                   <div className="flex items-center gap-2 mt-2">
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        if (activity.type === 'track_like') {
+                          handleLikeTrack(activity);
+                        } else {
+                          handleLikePlaylist(activity);
+                        }
+                      }}
+                    >
                       <Heart className="h-4 w-4 mr-1" />
                       Like
                     </Button>
