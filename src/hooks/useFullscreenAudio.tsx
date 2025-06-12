@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,6 +21,18 @@ export const useFullscreenAudio = (hymnNumber: string) => {
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
+  // Convert storage path to full URL
+  const getStorageUrl = (path: string): string => {
+    // If it's already a full URL, return as is
+    if (path.startsWith('http')) {
+      return path;
+    }
+    
+    // Convert storage path to full Supabase Storage URL
+    const { data } = supabase.storage.from('audio_files').getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   // Fetch audio files for the current hymn
   useEffect(() => {
     const fetchAudioFiles = async () => {
@@ -43,11 +54,11 @@ export const useFullscreenAudio = (hymnNumber: string) => {
 
         const combinedFiles: AudioFile[] = [];
 
-        // Add AudioFile records
+        // Add AudioFile records with converted URLs
         if (audioFileResult.data) {
           combinedFiles.push(...audioFileResult.data.map(file => ({
             id: file.id,
-            url: file.url,
+            url: getStorageUrl(file.url),
             audioTypeId: file.audioTypeId,
             userId: file.userId,
             createdAt: file.createdAt,
@@ -56,11 +67,11 @@ export const useFullscreenAudio = (hymnNumber: string) => {
           })));
         }
 
-        // Add uploads records
+        // Add uploads records with converted URLs
         if (uploadsResult.data) {
           combinedFiles.push(...uploadsResult.data.map(upload => ({
             id: upload.id,
-            url: upload.url,
+            url: getStorageUrl(upload.url),
             audioTypeId: upload.audioTypeId,
             userId: upload.userId,
             createdAt: upload.createdAt,
@@ -69,6 +80,7 @@ export const useFullscreenAudio = (hymnNumber: string) => {
           })));
         }
 
+        console.log('Fetched audio files:', combinedFiles);
         setAudioFiles(combinedFiles);
 
         if (audioFileResult.error) {
@@ -117,6 +129,8 @@ export const useFullscreenAudio = (hymnNumber: string) => {
   };
 
   const playAudio = (audioFile: AudioFile) => {
+    console.log('Playing audio file:', audioFile);
+    
     // Stop current audio if playing
     if (currentAudio) {
       currentAudio.pause();
@@ -129,21 +143,35 @@ export const useFullscreenAudio = (hymnNumber: string) => {
     const audio = new Audio(audioFile.url);
     
     // Set up event listeners
-    audio.addEventListener('loadstart', () => setLoading(true));
-    audio.addEventListener('canplay', () => setLoading(false));
-    audio.addEventListener('loadeddata', () => setLoading(false));
+    audio.addEventListener('loadstart', () => {
+      console.log('Audio load started for:', audioFile.url);
+      setLoading(true);
+    });
+    
+    audio.addEventListener('canplay', () => {
+      console.log('Audio can play:', audioFile.url);
+      setLoading(false);
+    });
+    
+    audio.addEventListener('loadeddata', () => {
+      console.log('Audio data loaded:', audioFile.url);
+      setLoading(false);
+    });
     
     audio.addEventListener('play', () => {
+      console.log('Audio playing:', audioFile.url);
       setIsPlaying(true);
       startProgressTracking(audio);
     });
     
     audio.addEventListener('pause', () => {
+      console.log('Audio paused');
       setIsPlaying(false);
       stopProgressTracking();
     });
     
     audio.addEventListener('ended', () => {
+      console.log('Audio ended');
       setIsPlaying(false);
       stopProgressTracking();
       setCurrentAudio(null);
@@ -152,10 +180,10 @@ export const useFullscreenAudio = (hymnNumber: string) => {
     
     audio.addEventListener('error', (e) => {
       setLoading(false);
-      console.error('Audio error:', e);
+      console.error('Audio error for URL:', audioFile.url, e);
       toast({
         title: "Error",
-        description: "Failed to load audio file. Please check the file format and try again.",
+        description: `Failed to load audio file: ${audioFile.url}. Please check the file format and try again.`,
         variant: "destructive",
       });
     });
@@ -165,6 +193,7 @@ export const useFullscreenAudio = (hymnNumber: string) => {
     setCurrentAudioFile(audioFile);
     
     audio.play().then(() => {
+      console.log('Audio playback started successfully');
       setLoading(false);
     }).catch(error => {
       setLoading(false);

@@ -885,6 +885,89 @@ export type Database = {
           },
         ]
       }
+      listening_history: {
+        Row: {
+          album_name: string | null
+          artist_name: string | null
+          book_id: number | null
+          created_at: string
+          duration: number | null
+          hymn_id: string
+          hymn_number: string | null
+          hymn_title: string
+          id: string
+          played_at: string
+          user_id: string
+        }
+        Insert: {
+          album_name?: string | null
+          artist_name?: string | null
+          book_id?: number | null
+          created_at?: string
+          duration?: number | null
+          hymn_id: string
+          hymn_number?: string | null
+          hymn_title: string
+          id?: string
+          played_at?: string
+          user_id: string
+        }
+        Update: {
+          album_name?: string | null
+          artist_name?: string | null
+          book_id?: number | null
+          created_at?: string
+          duration?: number | null
+          hymn_id?: string
+          hymn_number?: string | null
+          hymn_title?: string
+          id?: string
+          played_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lyric_sync_data: {
+        Row: {
+          created_at: string
+          end_time: number
+          id: string
+          line_index: number
+          start_time: number
+          sync_project_id: string
+          text: string
+          verse_index: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: number
+          id?: string
+          line_index: number
+          start_time: number
+          sync_project_id: string
+          text: string
+          verse_index: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: number
+          id?: string
+          line_index?: number
+          start_time?: number
+          sync_project_id?: string
+          text?: string
+          verse_index?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lyric_sync_data_sync_project_id_fkey"
+            columns: ["sync_project_id"]
+            isOneToOne: false
+            referencedRelation: "sync_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Metric: {
         Row: {
           id: number
@@ -1128,6 +1211,47 @@ export type Database = {
         }
         Relationships: []
       }
+      sync_projects: {
+        Row: {
+          created_at: string
+          hymn_id: string | null
+          id: string
+          sync_data: Json | null
+          title: string
+          track_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hymn_id?: string | null
+          id?: string
+          sync_data?: Json | null
+          title: string
+          track_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hymn_id?: string | null
+          id?: string
+          sync_data?: Json | null
+          title?: string
+          track_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_projects_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "Track"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       TimestampAudioFile: {
         Row: {
           audioFileUrl: string
@@ -1184,33 +1308,60 @@ export type Database = {
       }
       Track: {
         Row: {
+          album_name: string | null
           albumId: string | null
+          artist_name: string | null
           bookId: number | null
+          cover_image_url: string | null
+          created_at: string | null
+          disc_number: number | null
           duration: number
+          explicit: boolean | null
           genreId: number | null
           hymnTitleNumber: string | null
           id: string
+          release_date: string | null
           title: string
+          track_number: number | null
+          updated_at: string | null
           url: string
         }
         Insert: {
+          album_name?: string | null
           albumId?: string | null
+          artist_name?: string | null
           bookId?: number | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          disc_number?: number | null
           duration: number
+          explicit?: boolean | null
           genreId?: number | null
           hymnTitleNumber?: string | null
           id: string
+          release_date?: string | null
           title: string
+          track_number?: number | null
+          updated_at?: string | null
           url: string
         }
         Update: {
+          album_name?: string | null
           albumId?: string | null
+          artist_name?: string | null
           bookId?: number | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          disc_number?: number | null
           duration?: number
+          explicit?: boolean | null
           genreId?: number | null
           hymnTitleNumber?: string | null
           id?: string
+          release_date?: string | null
           title?: string
+          track_number?: number | null
+          updated_at?: string | null
           url?: string
         }
         Relationships: [
